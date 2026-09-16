@@ -44,39 +44,101 @@
             z-index: 0;
         }
 
-        /* Preloader Screen */
-        #preloader {
+        /* Password / Lock Screen Overlay */
+        #lock-screen {
             position: fixed;
             inset: 0;
             background: #030307;
-            z-index: 9999;
+            z-index: 99999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 1.5rem;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
 
-        .enter-btn {
-            background: linear-gradient(135deg, rgba(255,64,129,0.2), rgba(255,64,129,0.05));
-            border: 1px solid rgba(255,64,129,0.5);
-            color: var(--champagne);
-            font-family: 'Cinzel', serif;
-            padding: 1.2rem 2.8rem;
-            font-size: 1.1rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            border-radius: 50px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(255, 64, 129, 0.2);
-            transition: all 0.4s ease;
+        .lock-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
-        .enter-btn:hover {
-            transform: scale(1.05);
+        .lock-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .lock-title {
+            font-family: 'Cinzel', serif;
+            color: var(--champagne);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .lock-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.8rem;
+        }
+
+        .password-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--surface-border);
+            border-radius: 30px;
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 50px rgba(255, 64, 129, 0.4);
+        }
+
+        .unlock-btn {
+            background: linear-gradient(135deg, rgba(255,64,129,0.3), rgba(255,64,129,0.1));
+            border: 1px solid var(--accent);
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            padding: 0.9rem 1.8rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .unlock-btn:hover {
+            background: var(--accent);
+            box-shadow: 0 0 25px rgba(255, 64, 129, 0.5);
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            min-height: 1.2em;
+            display: none;
         }
 
         /* Floating Audio Player */
@@ -396,9 +458,18 @@
 
     <div class="ambient-glow"></div>
 
-    <!-- Preloader -->
-    <div id="preloader">
-        <button class="enter-btn" onclick="enterSite()">Enter</button>
+    <!-- Password / Lock Screen -->
+    <div id="lock-screen">
+        <div class="lock-card">
+            <span class="lock-icon">🔒</span>
+            <h2 class="lock-title">Subratha & Irfan</h2>
+            <p class="lock-subtitle">Enter the password to unlock our memories</p>
+            <div class="password-input-group">
+                <input type="password" id="passInput" class="password-input" placeholder="Password" onkeydown="checkEnter(event)">
+                <button class="unlock-btn" onclick="validatePassword()">Unlock</button>
+            </div>
+            <div id="errorMsg" class="error-msg">Incorrect password. Try again!</div>
+        </div>
     </div>
 
     <!-- Audio Element -->
@@ -425,6 +496,7 @@
 
     <script>
         const CONFIG = {
+            passcode: "irfanxsubu2430",
             her: "Subratha",
             me: "Irfan",
             startDate: "2025-09-26",
@@ -491,18 +563,30 @@
         const playBtn = document.getElementById('playBtn');
         let renderedPhotoCount = 0;
 
-        track.addEventListener('error', () => {
-            document.getElementById('player-container').style.display = 'none';
-        });
+        function checkEnter(e) {
+            if (e.key === 'Enter') validatePassword();
+        }
 
-        function enterSite() {
-            const playPromise = track.play();
+        function validatePassword() {
+            const input = document.getElementById('passInput').value;
+            const errorMsg = document.getElementById('errorMsg');
             
-            document.getElementById('preloader').style.opacity = '0';
+            if (input === CONFIG.passcode) {
+                unlockSite();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('passInput').value = '';
+            }
+        }
+
+        function unlockSite() {
+            const lockScreen = document.getElementById('lock-screen');
+            lockScreen.style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('preloader').style.visibility = 'hidden';
+                lockScreen.style.visibility = 'hidden';
             }, 800);
 
+            const playPromise = track.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     playBtn.innerHTML = '❚❚';
@@ -533,25 +617,6 @@
                 playBtn.innerHTML = '▶';
             }
         }
-
-        setInterval(() => {
-            if (track.currentTime) {
-                sessionStorage.setItem('audio_time', track.currentTime);
-                sessionStorage.setItem('audio_paused', track.paused);
-            }
-        }, 5000);
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && track.currentTime) {
-                sessionStorage.setItem('audio_time', track.currentTime);
-                sessionStorage.setItem('audio_paused', track.paused);
-            }
-        });
-
-        window.addEventListener('load', () => {
-            const savedTime = sessionStorage.getItem('audio_time');
-            if (savedTime) track.currentTime = parseFloat(savedTime);
-        });
 
         function handleRoute() {
             const hash = window.location.hash || '#/';
