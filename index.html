@@ -3,98 +3,635 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Our 1st Anniversary ✨</title>
+    <title>Subratha & Irfan — 1 Year</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #05050a;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            --accent: #ff4081;
+            --champagne: #f3e5ab;
+            --text-main: #f8f9fa;
+            --text-muted: #8a8d9b;
+            --glass-bg: rgba(12, 12, 22, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-            background: radial-gradient(circle at center, #1a092b 0%, #070714 100%);
-            color: #f8f9fa;
+            background-color: var(--bg);
+            color: var(--text-main);
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
-            padding: 2rem 1rem;
-            text-align: center;
+            overflow-x: hidden;
+            position: relative;
         }
-        .glow-heading {
-            font-family: 'Playfair Display', serif;
+
+        /* Ambient Glow Background */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,64,129,0.08) 0%, rgba(5,5,10,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Preloader Screen */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #030307;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .enter-btn {
+            background: linear-gradient(135deg, rgba(255,64,129,0.2), rgba(255,64,129,0.05));
+            border: 1px solid rgba(255,64,129,0.5);
+            color: var(--champagne);
+            font-family: 'Cinzel', serif;
+            padding: 1.2rem 2.8rem;
+            font-size: 1.1rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            border-radius: 50px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(255, 64, 129, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .enter-btn:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 0 50px rgba(255, 64, 129, 0.4);
+        }
+
+        /* Floating Audio Player */
+        #player-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 8000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px 8px 10px;
+            border-radius: 40px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .player-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .player-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 64, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0); }
+        }
+
+        .track-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .track-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .track-artist {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* View Container */
+        #view-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 6rem;
+            transition: opacity 0.35s ease;
+        }
+
+        .view-hidden { opacity: 0; }
+
+        /* Typography & Components */
+        h1, h2, h3 { font-family: 'Cinzel', serif; }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem 3rem;
+        }
+
+        .hero-names {
             font-size: 2.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, #ff80ab 100%);
+            letter-spacing: 0.15em;
+            background: linear-gradient(135deg, #ffffff 0%, var(--champagne) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(255, 128, 171, 0.5);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
-        .music-player-card {
-            background: rgba(22, 18, 43, 0.8);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 64, 129, 0.4);
-            border-radius: 50px;
-            padding: 0.8rem 1.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            box-shadow: 0 0 20px rgba(255, 64, 129, 0.3);
+
+        .typewriter-text {
+            font-size: 1.1rem;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            min-height: 1.8em;
+            font-weight: 300;
         }
-        .music-btn {
-            background: #ff4081;
-            border: none;
-            color: #fff;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: 0 0 12px #ff4081;
-        }
-        .btn-gallery {
+
+        .nav-link {
             display: inline-block;
-            padding: 14px 32px;
-            background: linear-gradient(135deg, #ff4081 0%, #7c4dff 100%);
-            color: white;
-            text-decoration: none;
+            margin-top: 2rem;
+            padding: 0.8rem 2rem;
+            border: 1px solid var(--surface-border);
             border-radius: 30px;
+            color: var(--text-main);
+            text-decoration: none;
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Timeline Section */
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .timeline-card {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            padding: 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+        }
+
+        .date-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--surface-border);
+            padding-right: 1rem;
+            text-align: center;
+        }
+
+        .date-month-day {
+            font-family: 'Cinzel', serif;
+            color: var(--champagne);
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            font-size: 0.95rem;
             font-weight: 600;
-            font-size: 1.05rem;
-            box-shadow: 0 0 18px rgba(255, 64, 129, 0.5);
+        }
+
+        .date-year {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .card-body h3 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card-body p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 2rem;
+        }
+
+        .photo-box {
+            aspect-ratio: 1 / 1;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            cursor: pointer;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .photo-box:hover img { transform: scale(1.08); }
+
+        .load-more-btn {
+            display: block;
+            margin: 2.5rem auto 0;
+            padding: 0.9rem 2.2rem;
+            border-radius: 30px;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            color: var(--champagne);
+            font-size: 0.9rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(255,64,129,0.2);
+        }
+
+        /* Lightbox */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .hero-names { font-size: 1.8rem; }
+            .timeline-card { grid-template-columns: 1fr; gap: 0.8rem; }
+            .date-block { border-right: none; border-bottom: 1px solid var(--surface-border); padding-right: 0; padding-bottom: 0.8rem; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
         }
     </style>
 </head>
 <body>
-    <header style="margin-top: 2rem;">
-        <h1 class="glow-heading">✨ 1 Year of Us ✨</h1>
-        <p style="color: #e1bee7; font-size: 1.1rem; margin-top: 0.5rem;">
-            365 Days of love, laughs, and unforgettable moments 💖
-        </p>
-    </header>
 
-    <div class="music-player-card">
-        <button class="music-btn" id="playBtn" onclick="toggleAudio()">▶</button>
-        <span id="musicStatus" style="font-size: 0.9rem; color: #ff80ab;">Tap to play our song 🎵</span>
-        <audio id="bgMusic" loop src="media/our_song.mp3"></audio>
+    <div class="ambient-glow"></div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <button class="enter-btn" onclick="enterSite()">Enter</button>
     </div>
 
-    <div style="margin-top: 2rem;">
-        <a href="timeline.html" class="btn-gallery">Enter Our 1st Year Memories 📸✨</a>
+    <!-- Audio Element -->
+    <audio id="track" loop playsinline preload="auto">
+        <source src="media/our_song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Floating Audio Player -->
+    <div id="player-container">
+        <button class="player-btn" id="playBtn" onclick="toggleAudio()">▶</button>
+        <div class="track-info">
+            <span class="track-title">Kadhaipoma</span>
+            <span class="track-artist">Subratha & Irfan</span>
+        </div>
+    </div>
+
+    <!-- Dynamic View Container -->
+    <div id="view-container"></div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Enlarged Memory">
     </div>
 
     <script>
-        const audio = document.getElementById('bgMusic');
-        const playBtn = document.getElementById('playBtn');
-        const musicStatus = document.getElementById('musicStatus');
+        const CONFIG = {
+            her: "Subratha",
+            me: "Irfan",
+            startDate: "2025-09-26",
+            anniversaryDate: "2026-09-26",
+            song: "media/our_song.mp3",
+            songTitle: "Kadhaipoma",
+            typewriter: [
+                "one year of you",
+                "still my favourite person",
+                "and every day after this one"
+            ],
+            timeline: [
+                { date: "2025-09-26", title: "Day one", body: "Where it all started." },
+                { date: "2025-06-19", title: "The famous slap", body: "You hit me. I'm still here. Some things don't need explaining." },
+                { date: "2026-05-10", title: "Held on", body: "The day we held each other and didn't let go." },
+                { date: "2026-08-08", title: "That look", body: "One second of eye contact that said more than a year of words." },
+                { date: "2026-09-11", title: "Closest", body: "The photo I keep going back to." }
+            ],
+            photos: [
+                "Snapchat-8918341.jpg", "Snapchat-14872826.jpg", "Snapchat-58762691.jpg", "Snapchat-78254346.jpg",
+                "Snapchat-102368297.jpg", "Snapchat-137767813.jpg", "Snapchat-145493363.jpg", "Snapchat-176269112.jpg",
+                "Snapchat-220834258.jpg", "Snapchat-220941219.jpg", "Snapchat-239954828.jpg", "Snapchat-251556174.jpg",
+                "Snapchat-303761219.jpg", "Snapchat-312998048.jpg", "Snapchat-333130792.jpg", "Snapchat-364774978.jpg",
+                "Snapchat-365417103.jpg", "Snapchat-371824455.jpg", "Snapchat-392696481.jpg", "Snapchat-405399909.jpg",
+                "Snapchat-417656273.jpg", "Snapchat-442547221.jpg", "Snapchat-460835510.jpg", "Snapchat-478615461.jpg",
+                "Snapchat-481556278.jpg", "Snapchat-530246004.jpg", "Snapchat-552060795.jpg", "Snapchat-601864968.jpg",
+                "Snapchat-603113688.jpg", "Snapchat-612007074.jpg", "Snapchat-656054272.jpg", "Snapchat-671071781.jpg",
+                "Snapchat-675624613.jpg", "Snapchat-681425692.jpg", "Snapchat-705535922.jpg", "Snapchat-733525995.jpg",
+                "Snapchat-756768852.jpg", "Snapchat-770157569.jpg", "Snapchat-810213072.jpg", "Snapchat-835200639.jpg",
+                "Snapchat-883035107.jpg", "Snapchat-885512926.jpg", "Snapchat-886328561.jpg", "Snapchat-890994510.jpg",
+                "Snapchat-910513999.jpg", "Snapchat-920322142.jpg", "Snapchat-985632640.jpg", "Snapchat-1046828141.jpg",
+                "Snapchat-1048518217.jpg", "Snapchat-1067081215.jpg", "Snapchat-1069689894.jpg", "Snapchat-1076747213.jpg",
+                "Snapchat-1077644504.jpg", "Snapchat-1095878405.jpg", "Snapchat-1114631544.jpg", "Snapchat-1123277883.jpg",
+                "Snapchat-1126404092.jpg", "Snapchat-1147017818.jpg", "Snapchat-1160437026.jpg", "Snapchat-1189830852.jpg",
+                "Snapchat-1197734658.jpg", "Snapchat-1248306984.jpg", "Snapchat-1316886713.jpg", "Snapchat-1318074600.jpg",
+                "Snapchat-1349432574.jpg", "Snapchat-1383990839.jpg", "Snapchat-1409670515.jpg", "Snapchat-1459495057.jpg",
+                "Snapchat-1519567116.jpg", "Snapchat-1522367184.jpg", "Snapchat-1527491323.jpg", "Snapchat-1540944223.jpg",
+                "Snapchat-1546268360.jpg", "Snapchat-1579052109.jpg", "Snapchat-1603024316.jpg", "Snapchat-1610362107.jpg",
+                "Snapchat-1611125689.jpg", "Snapchat-1632985965.jpg", "Snapchat-1652743157.jpg", "Snapchat-1674757377.jpg",
+                "Snapchat-1681541965.jpg", "Snapchat-1693061871.jpg", "Snapchat-1699389674.jpg", "Snapchat-1711830262.jpg",
+                "Snapchat-1728428143.jpg", "Snapchat-1728992702.jpg", "Snapchat-1738723655.jpg", "Snapchat-1789123993.jpg",
+                "Snapchat-1804597518.jpg", "Snapchat-1821535492.jpg", "Snapchat-1823743396.jpg", "Snapchat-1834792062.jpg",
+                "Snapchat-1835187802.jpg", "Snapchat-1841329855.jpg", "Snapchat-1872109352.jpg", "Snapchat-1879854708.jpg",
+                "Snapchat-1913931882.jpg", "Snapchat-1918792832.jpg", "Snapchat-1943028393.jpg", "Snapchat-1946642512.jpg",
+                "Snapchat-1950327631.jpg", "Snapchat-1954027513.jpg", "Snapchat-1963530390.jpg", "Snapchat-2043542398.jpg",
+                "Snapchat-2051378877.jpg", "Snapchat-2066027869.jpg", "Snapchat-2075222469.jpg", "Snapchat-2079897191.jpg",
+                "Snapchat-2095206932.jpg", "Snapchat-2118136256.jpg", "Snapchat-2138657451.jpg"
+            ]
+        };
 
-        function toggleAudio() {
-            if (audio.paused) {
-                audio.play();
-                playBtn.textContent = '⏸';
-                musicStatus.textContent = 'Playing our song... 🎶';
-            } else {
-                audio.pause();
-                playBtn.textContent = '▶';
-                musicStatus.textContent = 'Music paused 🎵';
+        const track = document.getElementById('track');
+        const playBtn = document.getElementById('playBtn');
+        let renderedPhotoCount = 0;
+
+        // Audio Handler
+        track.addEventListener('error', () => {
+            document.getElementById('player-container').style.display = 'none';
+        });
+
+        function enterSite() {
+            // SYNCHRONOUS play call for iOS Safari compliance
+            const playPromise = track.play();
+            
+            document.getElementById('preloader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('preloader').style.visibility = 'hidden';
+            }, 800);
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    playBtn.innerHTML = '❚❚';
+                    // Fade volume 0 -> 0.55 over 1200ms
+                    track.volume = 0;
+                    let vol = 0;
+                    const interval = setInterval(() => {
+                        if (vol < 0.55) {
+                            vol += 0.05;
+                            track.volume = Math.min(vol, 0.55);
+                        } else {
+                            clearInterval(interval);
+                        }
+                    }, 100);
+                }).catch(() => {
+                    playBtn.classList.add('player-pulse');
+                    playBtn.innerHTML = '▶';
+                });
             }
         }
+
+        function toggleAudio() {
+            if (track.paused) {
+                track.play();
+                playBtn.innerHTML = '❚❚';
+                playBtn.classList.remove('player-pulse');
+            } else {
+                track.pause();
+                playBtn.innerHTML = '▶';
+            }
+        }
+
+        // Session persistence
+        setInterval(() => {
+            if (track.currentTime) {
+                sessionStorage.setItem('audio_time', track.currentTime);
+                sessionStorage.setItem('audio_paused', track.paused);
+            }
+        }, 5000);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && track.currentTime) {
+                sessionStorage.setItem('audio_time', track.currentTime);
+                sessionStorage.setItem('audio_paused', track.paused);
+            }
+        });
+
+        window.addEventListener('load', () => {
+            const savedTime = sessionStorage.getItem('audio_time');
+            if (savedTime) track.currentTime = parseFloat(savedTime);
+        });
+
+        // Router
+        function handleRoute() {
+            const hash = window.location.hash || '#/';
+            const container = document.getElementById('view-container');
+            
+            container.classList.add('view-hidden');
+            setTimeout(() => {
+                if (hash === '#/timeline') {
+                    renderTimelineView(container);
+                } else {
+                    renderHomeView(container);
+                }
+                window.scrollTo(0, 0);
+                container.classList.remove('view-hidden');
+            }, 300);
+        }
+
+        window.addEventListener('hashchange', handleRoute);
+        window.addEventListener('popstate', handleRoute);
+
+        // Views
+        function renderHomeView(container) {
+            renderedPhotoCount = 0;
+            container.innerHTML = `
+                <section class="hero">
+                    <h1 class="hero-names">${CONFIG.her} & ${CONFIG.me}</h1>
+                    <div class="typewriter-text" id="typewriter"></div>
+                    <a href="#/timeline" class="nav-link">Explore Our Timeline →</a>
+                </section>
+                <div class="gallery-grid" id="galleryGrid"></div>
+                <button class="load-more-btn" id="loadMoreBtn" onclick="loadMorePhotos()">Load More Memories</button>
+            `;
+            initTypewriter();
+            loadMorePhotos();
+        }
+
+        function renderTimelineView(container) {
+            let timelineHtml = CONFIG.timeline.map(item => {
+                const dateObj = new Date(item.date);
+                const month = dateObj.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const year = dateObj.getFullYear();
+
+                return `
+                    <div class="timeline-card">
+                        <div class="date-block">
+                            <span class="date-month-day">${day} ${month}</span>
+                            <span class="date-year">${year}</span>
+                        </div>
+                        <div class="card-body">
+                            <h3>${item.title}</h3>
+                            <p>${item.body}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Closing card
+            timelineHtml += `
+                <div class="timeline-card">
+                    <div class="date-block">
+                        <span class="date-month-day">26 SEP</span>
+                        <span class="date-year">2026</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>One year</h3>
+                        <p>365 days, endless memories, and a lifetime to go.</p>
+                        <a href="#/" class="nav-link" style="margin-top: 1rem; padding: 0.5rem 1.2rem;">← Return Home</a>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = `
+                <section class="hero" style="padding-bottom: 1rem;">
+                    <h1 class="hero-names" style="font-size: 2rem;">Timeline of Us</h1>
+                </section>
+                <div class="timeline-list">${timelineHtml}</div>
+            `;
+        }
+
+        // Photo Grid Pagination
+        function loadMorePhotos() {
+            const grid = document.getElementById('galleryGrid');
+            const btn = document.getElementById('loadMoreBtn');
+            if (!grid) return;
+
+            const initialBatch = renderedPhotoCount === 0 ? 30 : 24;
+            const nextBatch = CONFIG.photos.slice(renderedPhotoCount, renderedPhotoCount + initialBatch);
+
+            nextBatch.forEach((file, index) => {
+                const fullIdx = renderedPhotoCount + index;
+                const box = document.createElement('div');
+                box.className = 'photo-box';
+                box.onclick = () => openLightbox(fullIdx);
+                box.innerHTML = `<img src="media/photos/${file}" loading="lazy" decoding="async" alt="Memory">`;
+                grid.appendChild(box);
+            });
+
+            renderedPhotoCount += nextBatch.length;
+
+            if (renderedPhotoCount >= CONFIG.photos.length && btn) {
+                btn.style.display = 'none';
+            }
+        }
+
+        // Lightbox Handler
+        function openLightbox(index) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = `media/photos/${CONFIG.photos[index]}`;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        // Typewriter Effect
+        function initTypewriter() {
+            const el = document.getElementById('typewriter');
+            if (!el) return;
+            let lineIdx = 0, charIdx = 0, isDeleting = false;
+
+            function type() {
+                const currentLine = CONFIG.typewriter[lineIdx];
+                if (isDeleting) {
+                    el.textContent = currentLine.substring(0, charIdx--);
+                } else {
+                    el.textContent = currentLine.substring(0, charIdx++);
+                }
+
+                let speed = isDeleting ? 40 : 80;
+
+                if (!isDeleting && charIdx === currentLine.length + 1) {
+                    speed = 2000;
+                    isDeleting = true;
+                } else if (isDeleting && charIdx === 0) {
+                    isDeleting = false;
+                    lineIdx = (lineIdx + 1) % CONFIG.typewriter.length;
+                    speed = 500;
+                }
+
+                setTimeout(type, speed);
+            }
+            type();
+        }
+
+        // Initialize Router
+        handleRoute();
     </script>
 </body>
 </html>
