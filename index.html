@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our 1st Anniversary ✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: radial-gradient(circle at center, #1a092b 0%, #070714 100%);
+            color: #f8f9fa;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .glow-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #ff80ab 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 128, 171, 0.5);
+            margin-bottom: 0.5rem;
+        }
+        .music-player-card {
+            background: rgba(22, 18, 43, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 64, 129, 0.4);
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            box-shadow: 0 0 20px rgba(255, 64, 129, 0.3);
+        }
+        .music-btn {
+            background: #ff4081;
+            border: none;
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 0 12px #ff4081;
+        }
+        .btn-gallery {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #ff4081 0%, #7c4dff 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 0 18px rgba(255, 64, 129, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <header style="margin-top: 2rem;">
+        <h1 class="glow-heading">✨ 1 Year of Us ✨</h1>
+        <p style="color: #e1bee7; font-size: 1.1rem; margin-top: 0.5rem;">
+            365 Days of love, laughs, and unforgettable moments 💖
+        </p>
+    </header>
+
+    <div class="music-player-card">
+        <button class="music-btn" id="playBtn" onclick="toggleAudio()">▶</button>
+        <span id="musicStatus" style="font-size: 0.9rem; color: #ff80ab;">Tap to play our song 🎵</span>
+        <audio id="bgMusic" loop src="media/our_song.mp3"></audio>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <a href="timeline.html" class="btn-gallery">Enter Our 1st Year Memories 📸✨</a>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bgMusic');
+        const playBtn = document.getElementById('playBtn');
+        const musicStatus = document.getElementById('musicStatus');
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸';
+                musicStatus.textContent = 'Playing our song... 🎶';
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶';
+                musicStatus.textContent = 'Music paused 🎵';
+            }
+        }
+    </script>
+</body>
+</html>
